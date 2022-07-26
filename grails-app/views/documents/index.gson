@@ -1,0 +1,8 @@
+import docxofficeapi.Documents
+
+model {
+	Iterable<Documents> documentsList
+}
+
+json tmpl.documents(documentsList ?: [])
+

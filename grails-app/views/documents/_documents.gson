@@ -1,0 +1,7 @@
+import docxofficeapi.Documents
+
+model {
+	Documents documents
+}
+
+json g.render(documents, [resolveTemplate: false])

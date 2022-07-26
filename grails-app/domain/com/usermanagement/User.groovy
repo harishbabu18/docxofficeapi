@@ -1,8 +1,11 @@
 package com.usermanagement
 
+import groovy.json.JsonSlurper
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import grails.compiler.GrailsCompileStatic
+
+import javax.management.relation.Role
 
 @GrailsCompileStatic
 @EqualsAndHashCode(includes='username')
@@ -17,24 +20,33 @@ class User implements Serializable {
     String gst
     String startDate
     String optionalFields
+    String roles
+    String address
+    String bank
     String username
     String password
+
     boolean enabled = true
-    boolean accountExpired
-    boolean accountLocked
-    boolean passwordExpired
+    boolean accountExpired = false
+    boolean accountLocked = false
+    boolean passwordExpired = false
 
     Set<Role> getAuthorities() {
-        (UserRole.findAllByUser(this) as List<UserRole>)*.role as Set<Role>
+        def parser = new JsonSlurper()
+        def json = parser.parseText(roles)
+        json as Set<Role>
     }
 
     static constraints = {
-        optionalFields nullable: true, blank: true
         password nullable: false, blank: false, password: true
         username nullable: false, blank: false, unique: true
     }
 
     static mapping = {
+        roles sqlType: "JSON"
+        optionalFields sqlType: "JSON"
+        address sqlType: "JSON"
+        bank sqlType: "JSON"
 	    password column: '`password`'
     }
 }
